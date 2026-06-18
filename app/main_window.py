@@ -3,6 +3,7 @@ from tkinter import ttk
 from app.tools.json_tool import JsonTool
 from app.tools.timestamp_tool import TimestampTool
 from app.tools.base64_url_tool import Base64UrlTool
+from app.tools.regex_tool import RegexTool
 
 
 class MainWindow:
@@ -16,6 +17,7 @@ class MainWindow:
             "JSON 格式化校验": JsonTool,
             "时间戳转换": TimestampTool,
             "Base64 / URL 编解码": Base64UrlTool,
+            "正则测试": RegexTool,
         }
 
         self.current_tool = None
