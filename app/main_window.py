@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from app.tools.json_tool import JsonTool
+from app.tools.timestamp_tool import TimestampTool
 
 
 class MainWindow:
@@ -12,6 +13,7 @@ class MainWindow:
 
         self.tools = {
             "JSON 格式化校验": JsonTool,
+            "时间戳转换": TimestampTool,
         }
 
         self.current_tool = None
