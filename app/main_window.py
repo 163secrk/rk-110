@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from app.tools.json_tool import JsonTool
 from app.tools.timestamp_tool import TimestampTool
+from app.tools.base64_url_tool import Base64UrlTool
 
 
 class MainWindow:
@@ -14,6 +15,7 @@ class MainWindow:
         self.tools = {
             "JSON 格式化校验": JsonTool,
             "时间戳转换": TimestampTool,
+            "Base64 / URL 编解码": Base64UrlTool,
         }
 
         self.current_tool = None
