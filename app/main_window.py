@@ -7,6 +7,7 @@ from app.tools.regex_tool import RegexTool
 from app.tools.qrcode_tool import QRCodeTool
 from app.tools.hash_tool import HashTool
 from app.tools.mindmap_tool import MindMapTool
+from app.tools.text_diff_tool import TextDiffTool
 
 
 class MainWindow:
@@ -24,6 +25,7 @@ class MainWindow:
                 "正则测试": RegexTool,
                 "哈希计算": HashTool,
                 "二维码生成": QRCodeTool,
+                "文本比对": TextDiffTool,
             },
             "文档协作": {
                 "思维导图": MindMapTool,
