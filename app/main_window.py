@@ -4,6 +4,7 @@ from app.tools.json_tool import JsonTool
 from app.tools.timestamp_tool import TimestampTool
 from app.tools.base64_url_tool import Base64UrlTool
 from app.tools.regex_tool import RegexTool
+from app.tools.qrcode_tool import QRCodeTool
 
 
 class MainWindow:
@@ -18,6 +19,7 @@ class MainWindow:
             "时间戳转换": TimestampTool,
             "Base64 / URL 编解码": Base64UrlTool,
             "正则测试": RegexTool,
+            "二维码生成": QRCodeTool,
         }
 
         self.current_tool = None
