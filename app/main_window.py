@@ -10,6 +10,7 @@ from app.tools.mindmap_tool import MindMapTool
 from app.tools.text_diff_tool import TextDiffTool
 from app.tools.color_converter_tool import ColorConverterTool
 from app.tools.jwt_tool import JWTTool
+from app.tools.markdown_preview_tool import MarkdownPreviewTool
 
 
 class MainWindow:
@@ -33,6 +34,7 @@ class MainWindow:
             },
             "文档协作": {
                 "思维导图": MindMapTool,
+                "Markdown预览": MarkdownPreviewTool,
             }
         }
 
