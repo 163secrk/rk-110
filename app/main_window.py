@@ -13,6 +13,7 @@ from app.tools.color_converter_tool import ColorConverterTool
 from app.tools.jwt_tool import JWTTool
 from app.tools.markdown_preview_tool import MarkdownPreviewTool
 from app.tools.xml_tool import XMLTool
+from app.tools.random_data_tool import RandomDataTool
 
 
 class MainWindow:
@@ -35,6 +36,7 @@ class MainWindow:
                 "二维码生成": QRCodeTool,
                 "文本比对": TextDiffTool,
                 "颜色转换": ColorConverterTool,
+                "随机数据生成": RandomDataTool,
             },
             "文档协作": {
                 "思维导图": MindMapTool,
