@@ -5,6 +5,7 @@ from app.tools.timestamp_tool import TimestampTool
 from app.tools.base64_url_tool import Base64UrlTool
 from app.tools.regex_tool import RegexTool
 from app.tools.qrcode_tool import QRCodeTool
+from app.tools.hash_tool import HashTool
 
 
 class MainWindow:
@@ -20,6 +21,7 @@ class MainWindow:
             "Base64 / URL 编解码": Base64UrlTool,
             "正则测试": RegexTool,
             "二维码生成": QRCodeTool,
+            "哈希计算": HashTool,
         }
 
         self.current_tool = None
