@@ -8,6 +8,7 @@ from app.tools.qrcode_tool import QRCodeTool
 from app.tools.hash_tool import HashTool
 from app.tools.mindmap_tool import MindMapTool
 from app.tools.text_diff_tool import TextDiffTool
+from app.tools.color_converter_tool import ColorConverterTool
 
 
 class MainWindow:
@@ -26,6 +27,7 @@ class MainWindow:
                 "哈希计算": HashTool,
                 "二维码生成": QRCodeTool,
                 "文本比对": TextDiffTool,
+                "颜色转换": ColorConverterTool,
             },
             "文档协作": {
                 "思维导图": MindMapTool,
