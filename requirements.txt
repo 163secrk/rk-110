@@ -6,3 +6,6 @@
 # 二维码生成工具依赖
 qrcode[pil]>=7.4.2
 Pillow>=9.0.0
+
+# 图片Base64互转工具拖拽支持
+tkinterdnd2>=0.4.0

@@ -3,7 +3,11 @@ from app.main_window import MainWindow
 
 
 def main():
-    root = tk.Tk()
+    try:
+        from tkinterdnd2 import TkinterDnD
+        root = TkinterDnD.Tk()
+    except ImportError:
+        root = tk.Tk()
     app = MainWindow(root)
     root.mainloop()
 

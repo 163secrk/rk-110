@@ -3,6 +3,7 @@ from tkinter import ttk
 from app.tools.json_tool import JsonTool
 from app.tools.timestamp_tool import TimestampTool
 from app.tools.base64_url_tool import Base64UrlTool
+from app.tools.image_base64_tool import ImageBase64Tool
 from app.tools.regex_tool import RegexTool
 from app.tools.qrcode_tool import QRCodeTool
 from app.tools.hash_tool import HashTool
@@ -27,6 +28,7 @@ class MainWindow:
                 "XML 工具": XMLTool,
                 "时间戳转换": TimestampTool,
                 "Base64 / URL 编解码": Base64UrlTool,
+                "图片Base64": ImageBase64Tool,
                 "JWT 解析": JWTTool,
                 "正则测试": RegexTool,
                 "哈希计算": HashTool,
