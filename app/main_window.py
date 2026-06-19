@@ -9,6 +9,7 @@ from app.tools.hash_tool import HashTool
 from app.tools.mindmap_tool import MindMapTool
 from app.tools.text_diff_tool import TextDiffTool
 from app.tools.color_converter_tool import ColorConverterTool
+from app.tools.jwt_tool import JWTTool
 
 
 class MainWindow:
@@ -23,6 +24,7 @@ class MainWindow:
                 "JSON 格式化校验": JsonTool,
                 "时间戳转换": TimestampTool,
                 "Base64 / URL 编解码": Base64UrlTool,
+                "JWT 解析": JWTTool,
                 "正则测试": RegexTool,
                 "哈希计算": HashTool,
                 "二维码生成": QRCodeTool,
