@@ -11,6 +11,7 @@ from app.tools.text_diff_tool import TextDiffTool
 from app.tools.color_converter_tool import ColorConverterTool
 from app.tools.jwt_tool import JWTTool
 from app.tools.markdown_preview_tool import MarkdownPreviewTool
+from app.tools.xml_tool import XMLTool
 
 
 class MainWindow:
@@ -23,6 +24,7 @@ class MainWindow:
         self.tool_categories = {
             "开发工具": {
                 "JSON 格式化校验": JsonTool,
+                "XML 工具": XMLTool,
                 "时间戳转换": TimestampTool,
                 "Base64 / URL 编解码": Base64UrlTool,
                 "JWT 解析": JWTTool,
