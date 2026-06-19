@@ -186,7 +186,17 @@ class MindMapListView(ttk.Frame):
         self.cards_canvas.bind("<Configure>",
                                lambda e: self.cards_canvas.itemconfigure(self.cards_window, width=e.width))
 
-        self.cards_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        self.cards_canvas.bind("<MouseWheel>", self._on_mousewheel)
+        self.cards_inner.bind("<MouseWheel>", self._on_mousewheel)
+        self.bind("<MouseWheel>", self._on_mousewheel)
+
+        self.bind("<Destroy>", self._on_destroy)
+
+    def _on_destroy(self, event):
+        try:
+            self.cards_canvas.unbind("<MouseWheel>")
+        except:
+            pass
 
     def _get_projects(self):
         stored = self.storage.list_projects()
@@ -196,7 +206,12 @@ class MindMapListView(ttk.Frame):
         return all_projects
 
     def _on_mousewheel(self, event):
-        self.cards_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        try:
+            if not self.cards_canvas.winfo_exists():
+                return
+            self.cards_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        except Exception:
+            pass
 
     def _refresh_list(self):
         for w in self.cards_inner.winfo_children():
@@ -211,12 +226,12 @@ class MindMapListView(ttk.Frame):
             empty_frame = ttk.Frame(self.cards_inner, style="Content.TFrame")
             empty_frame.pack(fill=tk.BOTH, expand=True, pady=80)
 
-            empty_label = ttk.Label(empty_frame,
-                                    text="还没有思维导图\n点击右上角「新建导图」开始创建",
-                                    font=("Microsoft YaHei", 14),
-                                    background="#f5f6fa",
-                                    foreground="#95a5a6",
-                                    justify=tk.CENTER)
+            empty_label = tk.Label(empty_frame,
+                                   text="还没有思维导图\n点击右上角「新建导图」开始创建",
+                                   font=("Microsoft YaHei", 14),
+                                   bg="#f5f6fa",
+                                   fg="#95a5a6",
+                                   justify=tk.CENTER)
             empty_label.pack()
             return
 
@@ -271,31 +286,34 @@ class MindMapCard(ttk.Frame):
                                 style="CardTitle.TLabel")
         title_label.pack(anchor=tk.W)
 
-        meta_frame = ttk.Frame(self, background="white")
+        meta_frame = tk.Frame(self, bg="white")
         meta_frame.pack(fill=tk.X, pady=(8, 0))
 
         project = self.map_info.get("project", "默认项目")
-        proj_label = ttk.Label(meta_frame,
-                               text=f"📁 {project}",
-                               style="CardMeta.TLabel",
-                               background="white")
+        proj_label = tk.Label(meta_frame,
+                              text=f"📁 {project}",
+                              font=("Microsoft YaHei", 9),
+                              fg="#7f8c8d",
+                              bg="white")
         proj_label.pack(side=tk.LEFT)
 
         creator = self.map_info.get("creator", "-")
-        creator_label = ttk.Label(meta_frame,
-                                  text=f"👤 {creator}",
-                                  style="CardMeta.TLabel",
-                                  background="white")
+        creator_label = tk.Label(meta_frame,
+                                 text=f"👤 {creator}",
+                                 font=("Microsoft YaHei", 9),
+                                 fg="#7f8c8d",
+                                 bg="white")
         creator_label.pack(side=tk.LEFT, padx=(10, 0))
 
         updated = MindMapStorage.format_timestamp(self.map_info.get("updated_at", time.time()))
-        time_label = ttk.Label(self,
-                               text=f"🕐 {updated}",
-                               style="CardMeta.TLabel",
-                               background="white")
+        time_label = tk.Label(self,
+                              text=f"🕐 {updated}",
+                              font=("Microsoft YaHei", 9),
+                              fg="#7f8c8d",
+                              bg="white")
         time_label.pack(anchor=tk.W, pady=(4, 10))
 
-        btn_frame = ttk.Frame(self, background="white")
+        btn_frame = tk.Frame(self, bg="white")
         btn_frame.pack(fill=tk.X)
 
         open_btn = ttk.Button(btn_frame,
@@ -330,8 +348,20 @@ class MindMapThumbnail(tk.Canvas):
         super().__init__(master, **kwargs)
         self.map_id = map_id
         self.storage = MindMapStorage()
-        self.bind("<Configure>", lambda e: self._draw_thumbnail())
-        self.after(50, self._draw_thumbnail)
+        self.bind("<Configure>", lambda e: self._safe_draw())
+        self.after(50, self._safe_draw)
+        self.bind("<Destroy>", lambda e: self._on_destroy())
+        self._destroyed = False
+
+    def _on_destroy(self):
+        self._destroyed = True
+
+    def _safe_draw(self):
+        try:
+            if not self._destroyed and self.winfo_exists():
+                self._draw_thumbnail()
+        except Exception:
+            pass
 
     def _draw_thumbnail(self):
         self.delete("all")
@@ -547,8 +577,18 @@ class MindMapEditorView(ttk.Frame):
         self._save_to_history()
         self._render_all()
 
+        self.bind("<Destroy>", self._on_destroy)
+
         if self.is_new:
             self._select_node(self.map_data["root"]["id"])
+
+    def _on_destroy(self, event):
+        try:
+            if self.auto_save_job:
+                self.after_cancel(self.auto_save_job)
+                self.auto_save_job = None
+        except Exception:
+            pass
 
     def _create_widgets(self):
         top_bar = ttk.Frame(self, style="Content.TFrame")
@@ -584,12 +624,12 @@ class MindMapEditorView(ttk.Frame):
                                   command=self._zoom_out)
         zoom_out_btn.pack(side=tk.LEFT)
 
-        self.zoom_label = ttk.Label(toolbar,
-                                    text=f"{int(self.scale * 100)}%",
-                                    font=("Microsoft YaHei", 10, "bold"),
-                                    width=6,
-                                    anchor="center",
-                                    background="#f5f6fa")
+        self.zoom_label = tk.Label(toolbar,
+                                   text=f"{int(self.scale * 100)}%",
+                                   font=("Microsoft YaHei", 10, "bold"),
+                                   width=6,
+                                   anchor="center",
+                                   bg="#f5f6fa")
         self.zoom_label.pack(side=tk.LEFT, padx=2)
 
         zoom_in_btn = ttk.Button(toolbar,
@@ -631,11 +671,11 @@ class MindMapEditorView(ttk.Frame):
 
         ttk.Separator(toolbar, orient=tk.VERTICAL).pack(side=tk.LEFT, padx=8, fill=tk.Y)
 
-        hint_label = ttk.Label(toolbar,
-                               text="提示: Tab=子节点 | Enter=同级 | 双击=编辑 | 拖拽=移动 | 右键=菜单",
-                               font=("Microsoft YaHei", 9),
-                               background="#f5f6fa",
-                               foreground="#7f8c8d")
+        hint_label = tk.Label(toolbar,
+                              text="提示: Tab=子节点 | Enter=同级 | 双击=编辑 | 拖拽=移动 | 右键=菜单",
+                              font=("Microsoft YaHei", 9),
+                              bg="#f5f6fa",
+                              fg="#7f8c8d")
         hint_label.pack(side=tk.LEFT, padx=5)
 
         canvas_container = ttk.Frame(self, style="Content.TFrame")
@@ -1073,7 +1113,14 @@ class MindMapEditorView(ttk.Frame):
         self._render_all()
         self._select_node(new_node["id"])
         self._mark_changed()
-        self.after(200, lambda: self._start_edit_node(new_node["id"]))
+        self.after(200, self._safe_start_edit, new_node["id"])
+
+    def _safe_start_edit(self, node_id):
+        try:
+            if self.winfo_exists():
+                self._start_edit_node(node_id)
+        except Exception:
+            pass
 
     def _add_sibling_node(self, node_id):
         node, parent = self._find_node(node_id)
@@ -1097,7 +1144,7 @@ class MindMapEditorView(ttk.Frame):
         self._render_all()
         self._select_node(new_node["id"])
         self._mark_changed()
-        self.after(200, lambda: self._start_edit_node(new_node["id"]))
+        self.after(200, self._safe_start_edit, new_node["id"])
 
     def _delete_node(self, node_id):
         if node_id == self.map_data["root"]["id"]:
@@ -1211,11 +1258,16 @@ class MindMapEditorView(ttk.Frame):
         self._render_all()
 
     def _on_mousewheel(self, event):
-        if event.state & 0x0004:
-            factor = 1.1 if event.delta > 0 else 0.9
-            self._zoom_at(event.x, event.y, factor)
-        else:
-            self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        try:
+            if not hasattr(self, 'canvas') or not self.canvas.winfo_exists():
+                return
+            if event.state & 0x0004:
+                factor = 1.1 if event.delta > 0 else 0.9
+                self._zoom_at(event.x, event.y, factor)
+            else:
+                self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        except Exception:
+            pass
 
     def _fit_to_screen(self):
         nodes = self._get_all_nodes_flat()
@@ -1323,8 +1375,20 @@ class MindMapEditorView(ttk.Frame):
         self.auto_save_job = None
 
     def _set_status(self, msg):
-        self.status_var.set(msg)
-        self.after(3000, lambda: self.status_var.set("") if self.status_var.get() == msg else None)
+        try:
+            if not self.winfo_exists():
+                return
+            self.status_var.set(msg)
+            self.after(3000, self._safe_clear_status, msg)
+        except Exception:
+            pass
+
+    def _safe_clear_status(self, msg):
+        try:
+            if self.winfo_exists() and self.status_var.get() == msg:
+                self.status_var.set("")
+        except Exception:
+            pass
 
     # ---------- 导出PNG ----------
     def _export_png(self):
